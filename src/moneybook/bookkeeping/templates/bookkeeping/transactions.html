@@ -12,6 +12,10 @@
     <th>Balance</th>
   </thead>
   <tbody>
+    <tr>
+      <td colspan="6"></td>
+      <td>{{ initial_balance }}</td>
+    </tr>
   {% for transaction in transactions %}
     <tr>
       <td>{{ transaction.reference }}</td>
