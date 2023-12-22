@@ -22,4 +22,5 @@ urlpatterns = [
     path(
         "bookkeeping/", include("moneybook.bookkeeping.urls", namespace="bookkeeping")
     ),
+    path("__debug__/", include("debug_toolbar.urls")),
 ]

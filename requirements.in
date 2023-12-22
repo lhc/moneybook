@@ -1,5 +1,6 @@
 dj-database-url
 django
+django-debug-toolbar
 gunicorn
 model-bakery
 psycopg2-binary
