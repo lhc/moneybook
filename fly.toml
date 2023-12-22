@@ -13,8 +13,8 @@ console_command = "/code/manage.py shell"
 [build]
 
 [env]
-  ALLOWED_HOSTS = "moneybook.fly.dev"
-  CSRF_TRUSTED_ORIGINS = "https://moneybook.fly.dev"
+  ALLOWED_HOSTS = "moneybook.lhc.net.br"
+  CSRF_TRUSTED_ORIGINS = "https://moneybook.lhc.net.br"
   DEBUG = "1"
   PORT = "8000"
 
