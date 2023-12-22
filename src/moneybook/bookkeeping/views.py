@@ -3,8 +3,12 @@ from django.shortcuts import render
 from moneybook.bookkeeping.models import Transaction
 
 
-def transactions(request):
-    transactions = Transaction.objects.values(
+def transactions(request, year=None):
+    transactions = Transaction.objects.all()
+    if year is not None:
+        transactions = Transaction.objects.for_year(year)
+
+    transactions = transactions.values(
         "reference",
         "date",
         "amount",
