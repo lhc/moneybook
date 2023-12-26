@@ -1,4 +1,5 @@
 {% extends 'core/base.html' %}
+{% load currency %}
 
 {% block content %}
 <table class="table table-striped table-hover table-sm">
@@ -14,17 +15,17 @@
   <tbody>
     <tr>
       <td colspan="6"></td>
-      <td>{{ initial_balance }}</td>
+      <td>{{ initial_balance|money }}</td>
     </tr>
   {% for transaction in transactions %}
     <tr>
       <td>{{ transaction.reference }}</td>
       <td>{{ transaction.date }}</td>
-      <td{% if transaction.amount < 0%} class="text-danger"{% endif %}>{{ transaction.amount }}</td>
+      <td{% if transaction.amount < 0%} class="text-danger"{% endif %}>{{ transaction.amount|money }}</td>
       <td>{{ transaction.description }}</td>
       <td>{{ transaction.account__name }}</td>
       <td>{{ transaction.category__name }}</td>
-      <td{% if transaction.balance < 0%} class="text-danger"{% endif %}>{{ transaction.balance }}</td>
+      <td{% if transaction.balance < 0%} class="text-danger"{% endif %}>{{ transaction.balance|money }}</td>
     </tr>
   {% endfor %}
   </tbody>
