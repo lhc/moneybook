@@ -3,7 +3,7 @@ import random
 from django.core.management.base import BaseCommand
 from faker import Faker
 
-from moneybook.bookkeeping.models import Account, Category, Transaction
+from moneybook.bookkeeping.models import CashBook, Category, Transaction
 from moneybook.users.models import User
 
 
@@ -11,8 +11,8 @@ class Command(BaseCommand):
     help = "Load database with fake data (useful for development)"
 
     def handle(self, *args, **options):
-        accounts = Account.objects.bulk_create(
-            [Account(name="Capybara Bank"), Account(name="Paypal")]
+        cash_books = CashBook.objects.bulk_create(
+            [CashBook(name="Capybara Bank"), CashBook(name="Paypal")]
         )
         user = User.objects.create(email="testuser@fakedata.com")
         categories = Category.objects.bulk_create(
@@ -36,7 +36,7 @@ class Command(BaseCommand):
                     ),
                     amount=random.randint(1, 1000),
                     notes=fake.sentence(),
-                    account=random.choice(accounts),
+                    cash_book=random.choice(cash_books),
                     category=random.choice(categories),
                     created_by=user,
                 )

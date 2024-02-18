@@ -1,10 +1,10 @@
 from django.contrib import admin
 
-from moneybook.bookkeeping.models import Account, Category, Transaction
+from moneybook.bookkeeping.models import CashBook, Category, Transaction
 
 
-@admin.register(Account)
-class AccountAdmin(admin.ModelAdmin):
+@admin.register(CashBook)
+class CashBookAdmin(admin.ModelAdmin):
     ...
 
 
@@ -23,6 +23,6 @@ class TransactionAdmin(admin.ModelAdmin):
         "transaction_type",
     ]
     list_filter = [
-        "account",
+        "cash_book",
         "category",
     ]

@@ -5,7 +5,7 @@ from django.utils.translation import gettext as _
 from moneybook.bookkeeping.managers import TransactionManager
 
 
-class Account(models.Model):
+class CashBook(models.Model):
     name = models.CharField(max_length=64, unique=True)
 
     def __str__(self):
@@ -33,13 +33,16 @@ class Document(models.Model):
 
 
 class Transaction(models.Model):
-    ACCOUNT_TRANSFER = 1
+    DEPOSIT = 1
     EXPENSE = 2
     INCOME = 3
+    WITHDRAW = 4
+
     TRANSACTION_TYPE_CHOICES = [
-        (ACCOUNT_TRANSFER, _("Account Transfer")),
+        (DEPOSIT, _("Deposit")),
         (EXPENSE, _("Expense")),
         (INCOME, _("Income")),
+        (WITHDRAW, _("Withdraw")),
     ]
 
     reference = models.CharField(max_length=32, unique=True)
@@ -52,8 +55,8 @@ class Transaction(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    account = models.ForeignKey(
-        "bookkeeping.Account", on_delete=models.SET_NULL, null=True
+    cash_book = models.ForeignKey(
+        "bookkeeping.CashBook", on_delete=models.SET_NULL, null=True
     )
     category = models.ForeignKey(
         "bookkeeping.Category", on_delete=models.SET_NULL, null=True

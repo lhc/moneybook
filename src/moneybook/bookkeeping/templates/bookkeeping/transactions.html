@@ -8,7 +8,7 @@
     <th>Date</th>
     <th>Amount</th>
     <th>Description</th>
-    <th>Account</th>
+    <th>Cash Book</th>
     <th>Category</th>
     <th>Balance</th>
   </thead>
@@ -23,7 +23,7 @@
       <td>{{ transaction.date }}</td>
       <td{% if transaction.amount < 0%} class="text-danger"{% endif %}>{{ transaction.amount|money }}</td>
       <td>{{ transaction.description }}</td>
-      <td>{{ transaction.account__name }}</td>
+      <td>{{ transaction.cash_book__name }}</td>
       <td>{{ transaction.category__name }}</td>
       <td{% if transaction.balance < 0%} class="text-danger"{% endif %}>{{ transaction.balance|money }}</td>
     </tr>

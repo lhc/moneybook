@@ -16,7 +16,7 @@ def transactions(request, year=None):
         "date",
         "amount",
         "description",
-        "account__name",
+        "cash_book__name",
         "category__name",
     )
 
