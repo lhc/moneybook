@@ -2,9 +2,10 @@ import datetime
 
 import pytest
 from django.db import IntegrityError
+from django.utils.text import slugify
 from model_bakery import baker
 
-from moneybook.bookkeeping.models import Transaction
+from moneybook.bookkeeping.models import CashBook, Transaction
 
 
 @pytest.mark.django_db
@@ -32,3 +33,13 @@ def test_each_transaction_need_a_unique_reference_value():
             Transaction, reference=transaction_reference, _save_related=True
         )
         transaction_2.save()
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("cash_book_name", ["Paypal Account", "Bank", "Cash Account"])
+def test_set_cash_book_slug_based_in_name(cash_book_name):
+    cash_book = CashBook(name=cash_book_name)
+
+    cash_book.save()
+
+    assert cash_book.slug == slugify(cash_book_name)
