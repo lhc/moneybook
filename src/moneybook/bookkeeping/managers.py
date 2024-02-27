@@ -5,7 +5,7 @@ from django.db import models
 from django.db.models import Sum
 
 
-class TransactionManager(models.Manager):
+class TransactionQuerySet(models.QuerySet):
     def for_year(self, year):
         return self.filter(date__year=year)
 

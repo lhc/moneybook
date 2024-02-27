@@ -3,7 +3,7 @@ from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import gettext as _
 
-from moneybook.bookkeeping.managers import TransactionManager
+from moneybook.bookkeeping.managers import TransactionQuerySet
 
 
 class CashBook(models.Model):
@@ -73,7 +73,7 @@ class Transaction(models.Model):
         on_delete=models.PROTECT,
     )
 
-    objects = TransactionManager()
+    objects = TransactionQuerySet.as_manager()
 
     class Meta:
         ordering = ["date"]
