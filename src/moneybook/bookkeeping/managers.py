@@ -6,6 +6,9 @@ from django.db.models import Sum
 
 
 class TransactionQuerySet(models.QuerySet):
+    def for_cash_book(self, slug):
+        return self.filter(cash_book__slug=slug)
+
     def for_year(self, year):
         return self.filter(date__year=year)
 
