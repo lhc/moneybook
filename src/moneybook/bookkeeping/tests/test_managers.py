@@ -8,7 +8,7 @@ from moneybook.bookkeeping.models import CashBook, Transaction
 
 
 @pytest.fixture
-def transactions():
+def test_transactions():
     baker.make(
         Transaction, date=datetime.date(2021, 1, 1), amount=decimal.Decimal("10.1")
     )
@@ -54,7 +54,9 @@ def test_get_transactions_by_specific_year():
         (2024, decimal.Decimal("11730.6")),
     ],
 )
-def test_get_initial_balance_for_year(transactions, year, expected_initial_balance):
+def test_get_initial_balance_for_year(
+    test_transactions, year, expected_initial_balance
+):
     initial_balance = Transaction.objects.initial_balance_for_year(year)
 
     assert initial_balance == expected_initial_balance
@@ -102,3 +104,31 @@ def test_get_transaction_for_cash_book_in_specific_year():
     assert transaction_2 not in transactions
     assert transaction_3 in transactions
     assert transaction_4 not in transactions
+
+
+@pytest.mark.django_db
+def test_transactions_with_cumulative_sum():
+    transaction_1 = baker.make(
+        Transaction, date=datetime.date(2021, 4, 28), amount=decimal.Decimal("100.1")
+    )
+    transaction_2 = baker.make(
+        Transaction, date=datetime.date(2022, 3, 2), amount=decimal.Decimal("142")
+    )
+    transaction_3 = baker.make(
+        Transaction, date=datetime.date(2023, 3, 2), amount=decimal.Decimal("255.55")
+    )
+
+    transactions = Transaction.objects.with_cumulative_sum()
+    assert len(transactions) == 3
+
+    assert transactions[0].id == transaction_1.id
+    assert transactions[0].cumulative_sum == transaction_1.amount
+
+    assert transactions[1].id == transaction_2.id
+    assert transactions[1].cumulative_sum == transaction_1.amount + transaction_2.amount
+
+    assert transactions[2].id == transaction_3.id
+    assert (
+        transactions[2].cumulative_sum
+        == transaction_1.amount + transaction_2.amount + transaction_3.amount
+    )

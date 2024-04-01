@@ -2,7 +2,7 @@ import datetime
 import decimal
 
 from django.db import models
-from django.db.models import Sum
+from django.db.models import F, Sum, Window
 
 
 class TransactionQuerySet(models.QuerySet):
@@ -18,3 +18,8 @@ class TransactionQuerySet(models.QuerySet):
             Sum("amount")
         ).get("amount__sum") or decimal.Decimal("0.0")
         return initial_balance
+
+    def with_cumulative_sum(self):
+        return self.annotate(
+            cumulative_sum=Window(Sum("amount"), order_by=F("date").asc())
+        )
