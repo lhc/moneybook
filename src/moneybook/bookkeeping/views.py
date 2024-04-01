@@ -1,27 +1,37 @@
 from django.http import HttpResponse
+from django.shortcuts import render
+
+from moneybook.bookkeeping.models import CashBook, Transaction
 
 
 def dashboard(request):
-    return HttpResponse("")
+    return HttpResponse("Dashboard")
 
 
 def all_transactions(request, year=None):
-    return HttpResponse("")
+    return HttpResponse("All transactions")
 
 
 def cash_book_transactions(request, cash_book_slug, year=None):
-    return HttpResponse("")
+    cash_book = CashBook.objects.get(slug=cash_book_slug)
+    transactions = Transaction.objects.for_cash_book(cash_book_slug)
+
+    initial_balance = 0
+
+    return render(
+        request,
+        "bookkeeping/transactions.html",
+        context={
+            "cash_book": cash_book,
+            "initial_balance": initial_balance,
+            "transactions": transactions,
+        },
+    )
 
 
-# def cash_book_transactions(request, cash_book_slug):
-#    ...
-#
-#
-#
 #
 #
 # def transactions(request, year=None):
-#    initial_balance = 0
 #
 #    transactions = Transaction.objects.all()
 #    if year is not None:
