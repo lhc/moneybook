@@ -14,7 +14,12 @@ def all_transactions(request, year=None):
 
 def cash_book_transactions(request, cash_book_slug, year=None):
     cash_book = CashBook.objects.get(slug=cash_book_slug)
-    transactions = Transaction.objects.for_cash_book(cash_book_slug)
+
+    transactions = Transaction.objects.for_cash_book(
+        cash_book_slug
+    ).with_cumulative_sum()
+    if year is not None:
+        transactions = transactions.for_year(year)
 
     initial_balance = 0
 

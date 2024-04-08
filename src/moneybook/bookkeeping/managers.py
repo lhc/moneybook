@@ -20,6 +20,6 @@ class TransactionQuerySet(models.QuerySet):
         return initial_balance
 
     def with_cumulative_sum(self):
-        return self.annotate(
-            cumulative_sum=Window(Sum("amount"), order_by=F("date").asc())
+        return self.order_by("date").annotate(
+            cumulative_sum=Window(Sum("amount"), order_by=F("id").asc())
         )

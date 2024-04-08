@@ -24,7 +24,7 @@
       <td{% if transaction.amount < 0 %} class="text-danger"{% endif %}>{{ transaction.amount|money }}</td>
       <td>{{ transaction.description }}</td>
       <td>{{ transaction.category__name }}</td>
-      <td{% if transaction.balance < 0 %} class="text-danger"{% endif %}>{{ transaction.balance }}</td>
+      <td{% if transaction.balance < 0 %} class="text-danger"{% endif %}>{{ transaction.cumulative_sum|money }}</td>
     </tr>
   {% endfor %}
   </tbody>
