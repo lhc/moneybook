@@ -1,9 +1,9 @@
-# fly.toml app configuration file generated for moneybook on 2023-11-28T17:42:39-03:00
+# fly.toml app configuration file generated for thebook on 2023-11-28T17:42:39-03:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = "moneybook"
+app = "thebook"
 primary_region = "gru"
 console_command = "/code/manage.py shell"
 
@@ -13,8 +13,8 @@ console_command = "/code/manage.py shell"
 [build]
 
 [env]
-  ALLOWED_HOSTS = "moneybook.lhc.net.br"
-  CSRF_TRUSTED_ORIGINS = "https://moneybook.lhc.net.br"
+  ALLOWED_HOSTS = "thebook.lhc.net.br"
+  CSRF_TRUSTED_ORIGINS = "https://thebook.lhc.net.br"
   DEBUG = "1"
   PORT = "8000"
 

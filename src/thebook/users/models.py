@@ -1,7 +1,7 @@
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.db import models
 
-from moneybook.users.managers import UserManager
+from thebook.users.managers import UserManager
 
 
 class User(AbstractBaseUser):

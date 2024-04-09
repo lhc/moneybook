@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from moneybook.bookkeeping.models import CashBook, Category, Transaction
+from thebook.bookkeeping.models import CashBook, Category, Transaction
 
 
 @admin.register(CashBook)

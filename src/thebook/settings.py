@@ -37,9 +37,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "debug_toolbar",
-    "moneybook.bookkeeping",
-    "moneybook.core",
-    "moneybook.users",
+    "thebook.bookkeeping",
+    "thebook.core",
+    "thebook.users",
 ]
 
 MIDDLEWARE = [
@@ -54,7 +54,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "moneybook.urls"
+ROOT_URLCONF = "thebook.urls"
 
 TEMPLATES = [
     {
@@ -72,7 +72,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "moneybook.wsgi.application"
+WSGI_APPLICATION = "thebook.wsgi.application"
 
 
 # Database

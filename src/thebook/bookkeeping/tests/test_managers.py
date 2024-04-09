@@ -4,7 +4,7 @@ import decimal
 import pytest
 from model_bakery import baker
 
-from moneybook.bookkeeping.models import CashBook, Transaction
+from thebook.bookkeeping.models import CashBook, Transaction
 
 
 @pytest.fixture

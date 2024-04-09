@@ -5,8 +5,8 @@ from pathlib import Path
 
 from django.core.management.base import BaseCommand
 
-from moneybook.bookkeeping.models import Account, Category, Transaction
-from moneybook.users.models import User
+from thebook.bookkeeping.models import Account, Category, Transaction
+from thebook.users.models import User
 
 
 @dataclass

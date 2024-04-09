@@ -3,8 +3,8 @@ import random
 from django.core.management.base import BaseCommand
 from faker import Faker
 
-from moneybook.bookkeeping.models import CashBook, Category, Transaction
-from moneybook.users.models import User
+from thebook.bookkeeping.models import CashBook, Category, Transaction
+from thebook.users.models import User
 
 
 class Command(BaseCommand):

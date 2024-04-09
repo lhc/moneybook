@@ -1,6 +1,6 @@
 from django.urls import path
 
-from moneybook.bookkeeping import views
+from thebook.bookkeeping import views
 
 app_name = "bookkeeping"
 

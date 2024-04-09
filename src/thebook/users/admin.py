@@ -2,8 +2,8 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import UserChangeForm
 
-from moneybook.users.forms import UserCreationForm
-from moneybook.users.models import User
+from thebook.users.forms import UserCreationForm
+from thebook.users.models import User
 
 
 @admin.register(User)

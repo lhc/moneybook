@@ -1,5 +1,5 @@
 """
-URL configuration for moneybook project.
+URL configuration for thebook project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.2/topics/http/urls/
@@ -19,8 +19,6 @@ from django.urls import include, path
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path(
-        "bookkeeping/", include("moneybook.bookkeeping.urls", namespace="bookkeeping")
-    ),
+    path("bookkeeping/", include("thebook.bookkeeping.urls", namespace="bookkeeping")),
     path("__debug__/", include("debug_toolbar.urls")),
 ]

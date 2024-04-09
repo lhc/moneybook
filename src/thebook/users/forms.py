@@ -1,6 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm as BaseUserCreationForm
 
-from moneybook.users.models import User
+from thebook.users.models import User
 
 
 class UserCreationForm(BaseUserCreationForm):

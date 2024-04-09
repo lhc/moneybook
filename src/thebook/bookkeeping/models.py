@@ -7,7 +7,7 @@ from django.db.models import Sum
 from django.utils.text import slugify
 from django.utils.translation import gettext as _
 
-from moneybook.bookkeeping.managers import TransactionQuerySet
+from thebook.bookkeeping.managers import TransactionQuerySet
 
 
 class CashBook(models.Model):

@@ -4,7 +4,7 @@ import decimal
 from django.http import HttpResponse
 from django.shortcuts import render
 
-from moneybook.bookkeeping.models import CashBook, Transaction
+from thebook.bookkeeping.models import CashBook, Transaction
 
 
 def cash_books(request):

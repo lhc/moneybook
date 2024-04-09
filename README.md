@@ -1,6 +1,6 @@
-# Moneybook
+# The Book
 
-Application to control incomes and expenses of
+Application for administrative control of
 [*Laboratório Hacker de Campinas*](https://lhc.net.br), a hackerspace located in
 [Campinas, SP, Brazil](https://www.openstreetmap.org/search?query=Laborat%C3%B3rio%20Hacker%20de%20Campinas#map=19/-22.91780/-47.05245).
 
@@ -119,6 +119,6 @@ flyctl logs
 flyctl ssh console -C bash
 ```
 
-> If you see the error message `Error: app moneybook has no started VMs.` it means
+> If you see the error message `Error: app thebook has no started VMs.` it means
 > that there is no machine running the application. Just access the application in
 > your browser (so a new VM is started) and try again.

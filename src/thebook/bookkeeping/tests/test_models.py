@@ -5,7 +5,7 @@ from django.db import IntegrityError
 from django.utils.text import slugify
 from model_bakery import baker
 
-from moneybook.bookkeeping.models import CashBook, Transaction
+from thebook.bookkeeping.models import CashBook, Transaction
 
 
 @pytest.mark.django_db
