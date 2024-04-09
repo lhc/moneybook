@@ -1,3 +1,5 @@
+import decimal
+
 from django.http import HttpResponse
 from django.shortcuts import render
 
@@ -5,7 +7,16 @@ from moneybook.bookkeeping.models import CashBook, Transaction
 
 
 def dashboard(request):
-    return render(request, "bookkeeping/dashboard.html")
+    return render(
+        request,
+        "bookkeeping/dashboard.html",
+        context={
+            "incomes__current_month": decimal.Decimal("0"),
+            "expenses__current_month": decimal.Decimal("0"),
+            "balance__current_month": decimal.Decimal("0"),
+            "balance__current_year": decimal.Decimal("0"),
+        },
+    )
 
 
 def all_transactions(request, year=None):

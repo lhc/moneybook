@@ -6,4 +6,5 @@ model-bakery
 psycopg2-binary
 pytest-django
 python-decouple
+pytest-freezegun
 whitenoise

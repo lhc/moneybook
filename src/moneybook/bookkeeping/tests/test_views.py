@@ -1,3 +1,4 @@
+import datetime
 import decimal
 
 import pytest
@@ -17,6 +18,39 @@ def test_dashboard_access(db, client):
     response = client.get(reverse("bookkeeping:dashboard"))
 
     assert response.status_code == 200
+
+
+def test_dashboard_expected_context(db, client):
+    response = client.get(reverse("bookkeeping:dashboard"))
+
+    assert response.context.get("incomes__current_month") == decimal.Decimal("0")
+    assert response.context.get("expenses__current_month") == decimal.Decimal("0")
+    assert response.context.get("balance__current_month") == decimal.Decimal("0")
+    assert response.context.get("balance__current_year") == decimal.Decimal("0")
+
+
+@pytest.mark.freeze_time("2024-04-08")
+@pytest.mark.xfail("NotImplemented")
+def test_dashboard_has_current_month_expenses_in_context(db, client):
+    baker.make(
+        Transaction, date=datetime.date(2024, 3, 1), amount=decimal.Decimal("10")
+    )
+    transaction_1 = baker.make(
+        Transaction, date=datetime.date(2024, 4, 1), amount=decimal.Decimal("45")
+    )
+    transaction_2 = baker.make(
+        Transaction, date=datetime.date(2024, 4, 8), amount=decimal.Decimal("5.1")
+    )
+    baker.make(
+        Transaction, date=datetime.date(2024, 5, 1), amount=decimal.Decimal("12")
+    )
+
+    response = client.get(reverse("bookkeeping:dashboard"))
+
+    assert (
+        response.context.get("incomes__current_month")
+        == transaction_1.amount + transaction_2.amount
+    )
 
 
 def test_cash_book_all_transactions_access(db, client, cash_book):
