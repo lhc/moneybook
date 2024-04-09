@@ -5,7 +5,7 @@ from moneybook.bookkeeping.models import CashBook, Transaction
 
 
 def dashboard(request):
-    return HttpResponse("Dashboard")
+    return render(request, "bookkeeping/dashboard.html")
 
 
 def all_transactions(request, year=None):
