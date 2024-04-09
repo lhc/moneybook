@@ -43,7 +43,6 @@ def test_get_transactions_by_specific_year():
     assert transaction_2023 not in transactions
 
 
-@pytest.mark.django_db
 @pytest.mark.parametrize(
     "year,expected_initial_balance",
     [
@@ -55,15 +54,14 @@ def test_get_transactions_by_specific_year():
     ],
 )
 def test_get_initial_balance_for_year(
-    test_transactions, year, expected_initial_balance
+    db, test_transactions, year, expected_initial_balance
 ):
     initial_balance = Transaction.objects.initial_balance_for_year(year)
 
     assert initial_balance == expected_initial_balance
 
 
-@pytest.mark.django_db
-def test_get_transaction_for_cash_book():
+def test_get_transaction_for_cash_book(db):
     cash_book_1 = baker.make(CashBook)
     cash_book_2 = baker.make(CashBook)  # noqa
 
@@ -79,8 +77,7 @@ def test_get_transaction_for_cash_book():
     assert transaction_3 not in transactions
 
 
-@pytest.mark.django_db
-def test_get_transaction_for_cash_book_in_specific_year():
+def test_get_transaction_for_cash_book_in_specific_year(db):
     cash_book_1 = baker.make(CashBook)
     cash_book_2 = baker.make(CashBook)  # noqa
 
@@ -106,8 +103,7 @@ def test_get_transaction_for_cash_book_in_specific_year():
     assert transaction_4 not in transactions
 
 
-@pytest.mark.django_db
-def test_transactions_with_cumulative_sum():
+def test_transactions_with_cumulative_sum(db):
     transaction_1 = baker.make(
         Transaction, date=datetime.date(2021, 4, 28), amount=decimal.Decimal("100.1")
     )
@@ -132,3 +128,22 @@ def test_transactions_with_cumulative_sum():
         transactions[2].cumulative_sum
         == transaction_1.amount + transaction_2.amount + transaction_3.amount
     )
+
+
+def test_transactions_summary(db):
+    transactions_summary = Transaction.objects.summary(month=4, year=2024)
+
+    assert transactions_summary["incomes__current_month"] == decimal.Decimal()
+    assert transactions_summary["expenses__current_month"] == decimal.Decimal()
+    assert transactions_summary["balance__current_month"] == decimal.Decimal()
+    assert transactions_summary["balance__current_year"] == decimal.Decimal()
+
+
+@pytest.mark.freeze_time("2024-04-08")
+def test_transactions_summary_with_transactions(db, summary_transactions):
+    transactions_summary = Transaction.objects.summary(month=4, year=2024)
+
+    assert transactions_summary["incomes__current_month"] == decimal.Decimal("12")
+    assert transactions_summary["expenses__current_month"] == decimal.Decimal("22")
+    assert transactions_summary["balance__current_month"] == decimal.Decimal("-10")
+    assert transactions_summary["balance__current_year"] == decimal.Decimal("7")
