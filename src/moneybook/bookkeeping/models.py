@@ -1,5 +1,9 @@
+import datetime
+import decimal
+
 from django.conf import settings
 from django.db import models
+from django.db.models import Sum
 from django.utils.text import slugify
 from django.utils.translation import gettext as _
 
@@ -17,6 +21,25 @@ class CashBook(models.Model):
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
+
+    @property
+    def current_month_balance(self):
+        today = datetime.date.today()
+        current_month = today.month
+        current_year = today.year
+
+        transactions = self.transaction_set.filter(
+            date__year=current_year, date__month=current_month
+        )
+
+        incomes = transactions.filter(transaction_type=Transaction.INCOME).aggregate(
+            incomes=Sum("amount")
+        ).get("incomes") or decimal.Decimal("0")
+        expenses = transactions.filter(transaction_type=Transaction.EXPENSE).aggregate(
+            expenses=Sum("amount")
+        ).get("expenses") or decimal.Decimal("0")
+
+        return incomes - expenses
 
 
 class Category(models.Model):

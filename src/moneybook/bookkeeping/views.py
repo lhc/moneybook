@@ -7,9 +7,14 @@ from django.shortcuts import render
 from moneybook.bookkeeping.models import CashBook, Transaction
 
 
+def cash_books(request):
+    return render(request, "bookkeeping/cashbooks.html")
+
+
 def dashboard(request):
     today = datetime.date.today()
     summary = Transaction.objects.summary(month=today.month, year=today.year)
+    cash_books = CashBook.objects.all()
 
     return render(
         request,
@@ -23,6 +28,7 @@ def dashboard(request):
             or decimal.Decimal("0"),
             "balance__current_year": summary.get("balance__current_year")
             or decimal.Decimal("0"),
+            "cash_books": cash_books,
         },
     )
 

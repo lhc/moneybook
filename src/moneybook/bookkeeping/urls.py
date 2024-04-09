@@ -8,6 +8,7 @@ urlpatterns = [
     path("", views.dashboard, name="dashboard"),
     path("all", views.all_transactions, name="all-transactions"),
     path("all/<int:year>", views.all_transactions, name="all-transactions-for-year"),
+    path("cb/", views.cash_books, name="cash-books"),
     path(
         "cb/<slug:cash_book_slug>",
         views.cash_book_transactions,
