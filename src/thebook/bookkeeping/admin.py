@@ -4,13 +4,11 @@ from thebook.bookkeeping.models import CashBook, Category, Transaction
 
 
 @admin.register(CashBook)
-class CashBookAdmin(admin.ModelAdmin):
-    ...
+class CashBookAdmin(admin.ModelAdmin): ...
 
 
 @admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
-    ...
+class CategoryAdmin(admin.ModelAdmin): ...
 
 
 @admin.register(Transaction)
