@@ -1,4 +1,5 @@
 import datetime
+import decimal
 
 import pytest
 from django.db import IntegrityError
@@ -43,3 +44,34 @@ def test_set_cash_book_slug_based_in_name(cash_book_name):
     cash_book.save()
 
     assert cash_book.slug == slugify(cash_book_name)
+
+
+@pytest.mark.freeze_time("2024-04-12")
+def test_cash_book_summary_with_transactions(db, cash_book_with_transactions):
+    # Income and Expense of Cash Book different than the fixture
+    extra_income = baker.make(  # noqa
+        Transaction,
+        date=datetime.date(2024, 4, 2),
+        amount=decimal.Decimal("15"),
+        transaction_type=Transaction.INCOME,
+    )
+    extra_expense = baker.make(  # noqa
+        Transaction,
+        date=datetime.date(2024, 4, 2),
+        amount=decimal.Decimal("17.1"),
+        transaction_type=Transaction.EXPENSE,
+    )
+
+    cash_book_summary = cash_book_with_transactions.summary(month=4, year=2024)
+
+    assert cash_book_summary == {
+        "id": cash_book_with_transactions.id,
+        "name": cash_book_with_transactions.name,
+        "incomes": decimal.Decimal("64.04"),
+        "expenses": decimal.Decimal("79.65"),
+        "deposits": decimal.Decimal("170"),
+        "withdraws": decimal.Decimal("80"),
+        "balance": decimal.Decimal("74.39"),
+        "month": 4,
+        "year": 2024,
+    }

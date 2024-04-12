@@ -41,6 +41,35 @@ class CashBook(models.Model):
 
         return incomes - expenses
 
+    def summary(self, month, year):
+        incomes = self.transaction_set.filter(
+            transaction_type=Transaction.INCOME, date__month=month, date__year=year
+        ).aggregate(incomes=Sum("amount")).get("incomes") or decimal.Decimal("0")
+
+        expenses = self.transaction_set.filter(
+            transaction_type=Transaction.EXPENSE, date__month=month, date__year=year
+        ).aggregate(expenses=Sum("amount")).get("expenses") or decimal.Decimal("0")
+
+        deposits = self.transaction_set.filter(
+            transaction_type=Transaction.DEPOSIT, date__month=month, date__year=year
+        ).aggregate(expenses=Sum("amount")).get("expenses") or decimal.Decimal("0")
+
+        withdraws = self.transaction_set.filter(
+            transaction_type=Transaction.WITHDRAW, date__month=month, date__year=year
+        ).aggregate(expenses=Sum("amount")).get("expenses") or decimal.Decimal("0")
+
+        return {
+            "id": self.id,
+            "name": self.name,
+            "incomes": incomes,
+            "expenses": expenses,
+            "deposits": deposits,
+            "withdraws": withdraws,
+            "balance": incomes + deposits - expenses - withdraws,
+            "month": month,
+            "year": year,
+        }
+
 
 class Category(models.Model):
     name = models.CharField(max_length=64, unique=True)
