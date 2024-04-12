@@ -130,20 +130,27 @@ def test_transactions_with_cumulative_sum(db):
     )
 
 
-def test_transactions_summary(db):
-    transactions_summary = Transaction.objects.summary(month=4, year=2024)
-
-    assert transactions_summary["incomes__current_month"] == decimal.Decimal()
-    assert transactions_summary["expenses__current_month"] == decimal.Decimal()
-    assert transactions_summary["balance__current_month"] == decimal.Decimal()
-    assert transactions_summary["balance__current_year"] == decimal.Decimal()
-
-
 @pytest.mark.freeze_time("2024-04-08")
-def test_transactions_summary_with_transactions(db, summary_transactions):
+def test_transactions_summary_with_transactions(db, cash_book_with_transactions):
+    # Income and Expense of Cash Book different than the fixture
+    extra_income = baker.make(  # noqa
+        Transaction,
+        date=datetime.date(2024, 4, 2),
+        amount=decimal.Decimal("15"),
+        transaction_type=Transaction.INCOME,
+    )
+    extra_expense = baker.make(  # noqa
+        Transaction,
+        date=datetime.date(2024, 4, 2),
+        amount=decimal.Decimal("17.1"),
+        transaction_type=Transaction.EXPENSE,
+    )
+
     transactions_summary = Transaction.objects.summary(month=4, year=2024)
 
-    assert transactions_summary["incomes__current_month"] == decimal.Decimal("12")
-    assert transactions_summary["expenses__current_month"] == decimal.Decimal("22")
-    assert transactions_summary["balance__current_month"] == decimal.Decimal("-10")
-    assert transactions_summary["balance__current_year"] == decimal.Decimal("7")
+    assert transactions_summary["incomes_month"] == decimal.Decimal("79.04")
+    assert transactions_summary["expenses_month"] == decimal.Decimal("96.75")
+    assert transactions_summary["balance_month"] == decimal.Decimal("-17.71")
+    assert transactions_summary["balance_year"] == decimal.Decimal("52.29")
+    assert transactions_summary["month"] == 4
+    assert transactions_summary["year"] == 2024

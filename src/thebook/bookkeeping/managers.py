@@ -20,35 +20,35 @@ class TransactionQuerySet(models.QuerySet):
         return initial_balance
 
     def summary(self, month, year):
-        today = datetime.date.today()
+        year_transactions = self.filter(date__year=year)
+        month_transactions = year_transactions.filter(date__month=month)
 
-        year_transactions = self.filter(date__year=today.year)
-        month_transactions = year_transactions.filter(date__month=today.month)
-
-        incomes__current_month = month_transactions.filter(
+        incomes_month = month_transactions.filter(
             transaction_type=self.model.INCOME
         ).aggregate(incomes=Sum("amount")).get("incomes") or decimal.Decimal("0")
 
-        expenses__current_month = month_transactions.filter(
+        expenses_month = month_transactions.filter(
             transaction_type=self.model.EXPENSE
         ).aggregate(expenses=Sum("amount")).get("expenses") or decimal.Decimal("0")
 
-        incomes__current_year = year_transactions.filter(
+        incomes_year = year_transactions.filter(
             transaction_type=self.model.INCOME
         ).aggregate(incomes=Sum("amount")).get("incomes") or decimal.Decimal("0")
 
-        expenses__current_year = year_transactions.filter(
+        expenses_year = year_transactions.filter(
             transaction_type=self.model.EXPENSE
         ).aggregate(expenses=Sum("amount")).get("expenses") or decimal.Decimal("0")
 
-        balance__current_month = incomes__current_month - expenses__current_month
-        balance__current_year = incomes__current_year - expenses__current_year
+        balance_month = incomes_month - expenses_month
+        balance_year = incomes_year - expenses_year
 
         return {
-            "incomes__current_month": incomes__current_month,
-            "expenses__current_month": expenses__current_month,
-            "balance__current_month": balance__current_month,
-            "balance__current_year": balance__current_year,
+            "incomes_month": incomes_month,
+            "expenses_month": expenses_month,
+            "balance_month": balance_month,
+            "balance_year": balance_year,
+            "month": month,
+            "year": year,
         }
 
     def with_cumulative_sum(self):
