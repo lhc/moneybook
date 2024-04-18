@@ -78,10 +78,10 @@
             <div class="row no-gutters align-items-center">
               <div class="col mr-2">
                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                  {% translate "Balance (current year)" %}
+                  {% translate "Balance" %}
                 </div>
                 <div class="h5 mb-0 font-weight-bold text-gray-800">
-                  {{ balance__current_year|money }}
+                  {{ balance|money }}
                 </div>
               </div>
               <div class="col-auto">
@@ -111,13 +111,13 @@
                 </th>
               </thead>
               <tbody>
-                {% for cash_book in cash_books %}
+                {% for cash_book_sumary in cash_books_summary %}
                   <tr>
                     <td>
-                      <a href="{% url 'bookkeeping:cash-book-transactions' cash_book.slug %}">{{ cash_book.name }}</a>
+                      <a href="{% url 'bookkeeping:cash-book-transactions' cash_book_sumary.slug %}">{{ cash_book_sumary.name }}</a>
                     </td>
                     <td>
-                      {{ cash_book.current_month_balance|money }}
+                      {{ cash_book_sumary.balance|money }}
                     </td>
                   </tr>
                 {% endfor %}

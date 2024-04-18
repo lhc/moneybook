@@ -67,6 +67,7 @@ def test_cash_book_summary_with_transactions(db, cash_book_with_transactions):
     assert cash_book_summary == {
         "id": cash_book_with_transactions.id,
         "name": cash_book_with_transactions.name,
+        "slug": cash_book_with_transactions.slug,
         "incomes": decimal.Decimal("64.04"),
         "expenses": decimal.Decimal("79.65"),
         "deposits": decimal.Decimal("170"),

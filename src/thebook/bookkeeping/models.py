@@ -61,6 +61,7 @@ class CashBook(models.Model):
         return {
             "id": self.id,
             "name": self.name,
+            "slug": self.slug,
             "incomes": incomes,
             "expenses": expenses,
             "deposits": deposits,

@@ -9,7 +9,10 @@ from thebook.bookkeeping.models import CashBook, Transaction
 def dashboard(request):
     today = datetime.date.today()
     summary = Transaction.objects.summary(month=today.month, year=today.year)
-    cash_books = CashBook.objects.all()
+
+    cash_books_summary = []
+    for cash_book in CashBook.objects.all():
+        cash_books_summary.append(cash_book.summary(today.month, today.year))
 
     return render(
         request,
@@ -21,8 +24,7 @@ def dashboard(request):
             or decimal.Decimal("0"),
             "balance__current_month": summary.get("balance_month")
             or decimal.Decimal("0"),
-            "balance__current_year": summary.get("balance_year")
-            or decimal.Decimal("0"),
-            "cash_books": cash_books,
+            "balance": summary.get("current_balance") or decimal.Decimal("0"),
+            "cash_books_summary": cash_books_summary,
         },
     )
