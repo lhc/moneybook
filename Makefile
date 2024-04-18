@@ -9,5 +9,8 @@ migrate:
 runserver:
 	$(SRC_DIR) python manage.py runserver
 
+shell:
+	$(SRC_DIR) python manage.py shell
+
 test:
 	$(SRC_DIR) pytest --ds=thebook.settings -s

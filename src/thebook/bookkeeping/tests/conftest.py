@@ -9,7 +9,7 @@ from thebook.bookkeeping.models import CashBook, Transaction
 
 @pytest.fixture
 def cash_book_with_transactions():
-    cash_book = baker.make(CashBook)
+    cash_book = baker.make(CashBook, name="Test Cash Book")
 
     baker.make(
         Transaction,

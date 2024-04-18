@@ -150,7 +150,8 @@ def test_transactions_summary_with_transactions(db, cash_book_with_transactions)
 
     assert transactions_summary["incomes_month"] == decimal.Decimal("79.04")
     assert transactions_summary["expenses_month"] == decimal.Decimal("96.75")
-    assert transactions_summary["balance_month"] == decimal.Decimal("-17.71")
-    assert transactions_summary["balance_year"] == decimal.Decimal("52.29")
+    assert transactions_summary["balance_month"] == decimal.Decimal("72.29")
+    assert transactions_summary["balance_year"] == decimal.Decimal("192.29")
+    assert transactions_summary["current_balance"] == decimal.Decimal("192.29")
     assert transactions_summary["month"] == 4
     assert transactions_summary["year"] == 2024
