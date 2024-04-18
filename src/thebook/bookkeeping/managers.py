@@ -2,7 +2,57 @@ import datetime
 import decimal
 
 from django.db import models
-from django.db.models import F, Q, Sum, Window
+from django.db.models import F, Q, Sum, Value, Window
+
+
+class CashBookQuerySet(models.QuerySet):
+    def summary(self, month, year):
+        from thebook.bookkeeping.models import Transaction
+
+        return self.annotate(
+            positive_balance_month=Sum(
+                "transaction__amount",
+                filter=Q(
+                    transaction__date__month=month,
+                    transaction__date__year=year,
+                    transaction__transaction_type__in=(
+                        Transaction.DEPOSIT,
+                        Transaction.INCOME,
+                    ),
+                ),
+            ),
+            negative_balance_month=Sum(
+                "transaction__amount",
+                filter=Q(
+                    transaction__date__month=month,
+                    transaction__date__year=year,
+                    transaction__transaction_type__in=(
+                        Transaction.WITHDRAW,
+                        Transaction.EXPENSE,
+                    ),
+                ),
+            ),
+            positive_current_balance=Sum(
+                "transaction__amount",
+                filter=Q(
+                    transaction__transaction_type__in=(
+                        Transaction.DEPOSIT,
+                        Transaction.INCOME,
+                    )
+                ),
+            ),
+            negative_current_balance=Sum(
+                "transaction__amount",
+                filter=Q(
+                    transaction__transaction_type__in=(
+                        Transaction.WITHDRAW,
+                        Transaction.EXPENSE,
+                    )
+                ),
+            ),
+            month=Value(month),
+            year=Value(year),
+        )
 
 
 class TransactionQuerySet(models.QuerySet):

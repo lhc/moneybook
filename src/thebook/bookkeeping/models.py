@@ -7,12 +7,14 @@ from django.db.models import Sum
 from django.utils.text import slugify
 from django.utils.translation import gettext as _
 
-from thebook.bookkeeping.managers import TransactionQuerySet
+from thebook.bookkeeping.managers import CashBookQuerySet, TransactionQuerySet
 
 
 class CashBook(models.Model):
     name = models.CharField(max_length=64, unique=True)
     slug = models.SlugField(max_length=64, unique=True)
+
+    objects = CashBookQuerySet.as_manager()
 
     def __str__(self):
         return self.name
