@@ -47,7 +47,7 @@ def test_set_cash_book_slug_based_in_name(cash_book_name):
 
 
 @pytest.mark.freeze_time("2024-04-12")
-def test_cash_book_summary_with_transactions(db, cash_book_with_transactions):
+def test_cash_book_summary_with_transactions(db, cash_book_one_with_transactions):
     # Income and Expense of Cash Book different than the fixture
     extra_income = baker.make(  # noqa
         Transaction,
@@ -62,12 +62,12 @@ def test_cash_book_summary_with_transactions(db, cash_book_with_transactions):
         transaction_type=Transaction.EXPENSE,
     )
 
-    cash_book_summary = cash_book_with_transactions.summary(month=4, year=2024)
+    cash_book_summary = cash_book_one_with_transactions.summary(month=4, year=2024)
 
     assert cash_book_summary == {
-        "id": cash_book_with_transactions.id,
-        "name": cash_book_with_transactions.name,
-        "slug": cash_book_with_transactions.slug,
+        "id": cash_book_one_with_transactions.id,
+        "name": cash_book_one_with_transactions.name,
+        "slug": cash_book_one_with_transactions.slug,
         "incomes": decimal.Decimal("64.04"),
         "expenses": decimal.Decimal("79.65"),
         "deposits": decimal.Decimal("170"),

@@ -1,6 +1,3 @@
-import decimal
-
-import pytest
 from django.urls import reverse
 
 
@@ -13,19 +10,5 @@ def test_dashboard_access(db, client):
 def test_dashboard_expected_context(db, client):
     response = client.get(reverse("core:dashboard"))
 
-    assert response.context.get("incomes__current_month") == decimal.Decimal("0")
-    assert response.context.get("expenses__current_month") == decimal.Decimal("0")
-    assert response.context.get("balance__current_month") == decimal.Decimal("0")
-    assert response.context.get("balance") == decimal.Decimal("0")
-
-
-@pytest.mark.freeze_time("2024-04-08")
-def test_dashboard_has_transactions_summary_in_context(
-    db, client, summary_transactions
-):
-    response = client.get(reverse("core:dashboard"))
-
-    assert response.context["incomes__current_month"] == decimal.Decimal("12")
-    assert response.context["expenses__current_month"] == decimal.Decimal("22")
-    assert response.context["balance__current_month"] == decimal.Decimal("-10")
-    assert response.context["balance"] == decimal.Decimal("11")
+    assert "transactions_summary" in response.context
+    assert "cash_books_summary" in response.context

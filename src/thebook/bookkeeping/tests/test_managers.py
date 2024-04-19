@@ -130,7 +130,7 @@ def test_transactions_with_cumulative_sum(db):
     )
 
 
-def test_transactions_summary_with_transactions(db, cash_book_with_transactions):
+def test_transactions_summary_with_transactions(db, cash_book_one_with_transactions):
     # Income and Expense of Cash Book different than the fixture
     extra_income = baker.make(  # noqa
         Transaction,
@@ -156,49 +156,31 @@ def test_transactions_summary_with_transactions(db, cash_book_with_transactions)
     assert transactions_summary["year"] == 2024
 
 
-def test_cash_books_summary_with_transactions(db, cash_book_with_transactions):
-    second_cash_book = baker.make(CashBook)
-    baker.make(
-        Transaction,
-        date=datetime.date(2023, 3, 2),
-        amount=decimal.Decimal("55.43"),
-        transaction_type=Transaction.INCOME,
-        cash_book=second_cash_book,
-    )
-    baker.make(
-        Transaction,
-        date=datetime.date(2024, 4, 2),
-        amount=decimal.Decimal("15"),
-        transaction_type=Transaction.INCOME,
-        cash_book=second_cash_book,
-    )
-    baker.make(
-        Transaction,
-        date=datetime.date(2024, 4, 2),
-        amount=decimal.Decimal("17.1"),
-        transaction_type=Transaction.EXPENSE,
-        cash_book=second_cash_book,
-    )
-
+def test_cash_books_summary_with_transactions(
+    db, cash_book_one_with_transactions, cash_book_two_with_transactions
+):
     # Ordering by id to ensure that the first result is the Cash Book created in the fixture
     cash_books_summary = CashBook.objects.summary(month=4, year=2024).order_by("id")
 
     assert len(cash_books_summary) == 2
 
-    assert cash_books_summary[0].name == cash_book_with_transactions.name
-    assert cash_books_summary[0].slug == cash_book_with_transactions.slug
-    assert cash_books_summary[0].positive_balance_month == decimal.Decimal("234.04")
-    assert cash_books_summary[0].negative_balance_month == decimal.Decimal("159.65")
-    assert cash_books_summary[0].positive_current_balance == decimal.Decimal("551.36")
-    assert cash_books_summary[0].negative_current_balance == decimal.Decimal("356.97")
-    assert cash_books_summary[0].month == 4
-    assert cash_books_summary[0].year == 2024
+    first_summary = cash_books_summary[0]  # i.e. cash_book_one_with_transactions
+    second_summary = cash_books_summary[1]  # i.e. cash_book_two_with_transactions
 
-    assert cash_books_summary[1].name == second_cash_book.name
-    assert cash_books_summary[1].slug == second_cash_book.slug
-    assert cash_books_summary[1].positive_balance_month == decimal.Decimal("15")
-    assert cash_books_summary[1].negative_balance_month == decimal.Decimal("17.1")
-    assert cash_books_summary[1].positive_current_balance == decimal.Decimal("70.43")
-    assert cash_books_summary[1].negative_current_balance == decimal.Decimal("17.1")
-    assert cash_books_summary[1].month == 4
-    assert cash_books_summary[1].year == 2024
+    assert first_summary.name == cash_book_one_with_transactions.name
+    assert first_summary.slug == cash_book_one_with_transactions.slug
+    assert first_summary.positive_balance_month == decimal.Decimal("234.04")
+    assert first_summary.negative_balance_month == decimal.Decimal("159.65")
+    assert first_summary.positive_current_balance == decimal.Decimal("551.36")
+    assert first_summary.negative_current_balance == decimal.Decimal("356.97")
+    assert first_summary.month == 4
+    assert first_summary.year == 2024
+
+    assert second_summary.name == cash_book_two_with_transactions.name
+    assert second_summary.slug == cash_book_two_with_transactions.slug
+    assert second_summary.positive_balance_month == decimal.Decimal("0")
+    assert second_summary.negative_balance_month == decimal.Decimal("155.42")
+    assert second_summary.positive_current_balance == decimal.Decimal("220.9")
+    assert second_summary.negative_current_balance == decimal.Decimal("155.42")
+    assert second_summary.month == 4
+    assert second_summary.year == 2024

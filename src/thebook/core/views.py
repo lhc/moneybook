@@ -1,5 +1,4 @@
 import datetime
-import decimal
 
 from django.shortcuts import render
 
@@ -17,14 +16,7 @@ def dashboard(request):
         request,
         "bookkeeping/dashboard.html",
         context={
-            "incomes__current_month": transactions_summary.get("incomes_month")
-            or decimal.Decimal("0"),
-            "expenses__current_month": transactions_summary.get("expenses_month")
-            or decimal.Decimal("0"),
-            "balance__current_month": transactions_summary.get("balance_month")
-            or decimal.Decimal("0"),
-            "balance": transactions_summary.get("current_balance")
-            or decimal.Decimal("0"),
+            "transactions_summary": transactions_summary,
             "cash_books_summary": cash_books_summary,
         },
     )

@@ -8,8 +8,8 @@ from thebook.bookkeeping.models import CashBook, Transaction
 
 
 @pytest.fixture
-def cash_book_with_transactions():
-    cash_book = baker.make(CashBook, name="Test Cash Book")
+def cash_book_one_with_transactions():
+    cash_book = baker.make(CashBook, name="Cash Book One")
 
     baker.make(
         Transaction,
@@ -95,6 +95,42 @@ def cash_book_with_transactions():
         transaction_type=Transaction.WITHDRAW,
         date=datetime.date(2024, 4, 12),
         amount=decimal.Decimal("80"),
+    )
+
+    return cash_book
+
+
+@pytest.fixture
+def cash_book_two_with_transactions():
+    cash_book = baker.make(CashBook, name="Cash Book Two")
+
+    baker.make(
+        Transaction,
+        cash_book=cash_book,
+        transaction_type=Transaction.DEPOSIT,
+        date=datetime.date(2023, 3, 1),
+        amount=decimal.Decimal("100"),
+    )
+    baker.make(
+        Transaction,
+        cash_book=cash_book,
+        transaction_type=Transaction.INCOME,
+        date=datetime.date(2024, 3, 5),
+        amount=decimal.Decimal("120.9"),
+    )
+    baker.make(
+        Transaction,
+        cash_book=cash_book,
+        transaction_type=Transaction.EXPENSE,
+        date=datetime.date(2024, 4, 12),
+        amount=decimal.Decimal("5.42"),
+    )
+    baker.make(
+        Transaction,
+        cash_book=cash_book,
+        transaction_type=Transaction.WITHDRAW,
+        date=datetime.date(2024, 4, 25),
+        amount=decimal.Decimal("150"),
     )
 
     return cash_book

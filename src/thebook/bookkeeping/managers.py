@@ -20,6 +20,7 @@ class CashBookQuerySet(models.QuerySet):
                         Transaction.INCOME,
                     ),
                 ),
+                default=decimal.Decimal("0"),
             ),
             negative_balance_month=Sum(
                 "transaction__amount",
@@ -31,6 +32,7 @@ class CashBookQuerySet(models.QuerySet):
                         Transaction.EXPENSE,
                     ),
                 ),
+                default=decimal.Decimal("0"),
             ),
             positive_current_balance=Sum(
                 "transaction__amount",
@@ -40,6 +42,7 @@ class CashBookQuerySet(models.QuerySet):
                         Transaction.INCOME,
                     )
                 ),
+                default=decimal.Decimal("0"),
             ),
             negative_current_balance=Sum(
                 "transaction__amount",
@@ -49,6 +52,7 @@ class CashBookQuerySet(models.QuerySet):
                         Transaction.EXPENSE,
                     )
                 ),
+                default=decimal.Decimal("0"),
             ),
             month=Value(month),
             year=Value(year),

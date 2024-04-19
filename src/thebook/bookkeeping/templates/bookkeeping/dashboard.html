@@ -24,7 +24,7 @@
                   {% translate "Incomes (current month)" %}
                 </div>
                 <div class="h5 mb-0 font-weight-bold text-gray-800">
-                  {{ incomes__current_month|money }}
+                  {{ transactions_summary.incomes_month|money }}
                 </div>
               </div>
               <div class="col-auto">
@@ -43,7 +43,7 @@
                   {% translate "Expenses (current month)" %}
                 </div>
                 <div class="h5 mb-0 font-weight-bold text-gray-800">
-                  {{ expenses__current_month|money }}
+                  {{ transactions_summary.expenses_month|money }}
                 </div>
               </div>
               <div class="col-auto">
@@ -62,7 +62,7 @@
                   {% translate "Balance (current month)" %}
                 </div>
                 <div class="h5 mb-0 font-weight-bold text-gray-800">
-                  {{ balance__current_month|money }}
+                  {{ transactions_summary.balance_month|money }}
                 </div>
               </div>
               <div class="col-auto">
@@ -81,7 +81,7 @@
                   {% translate "Balance" %}
                 </div>
                 <div class="h5 mb-0 font-weight-bold text-gray-800">
-                  {{ balance|money }}
+                  {{ transactions_summary.current_balance|money }}
                 </div>
               </div>
               <div class="col-auto">
@@ -107,6 +107,9 @@
                   {% translate "Cash Book" %}
                 </th>
                 <th>
+                  {% translate "Balance (current month)" %}
+                </th>
+                <th>
                   {% translate "Balance" %}
                 </th>
               </thead>
@@ -117,7 +120,10 @@
                       <a href="{% url 'bookkeeping:cash-book-transactions' cash_book_sumary.slug %}">{{ cash_book_sumary.name }}</a>
                     </td>
                     <td>
-                      {{ cash_book_sumary.balance|money }}
+                      {{ cash_book_sumary.positive_balance_month|subtract_float:cash_book_sumary.negative_balance_month|money }}
+                    </td>
+                    <td>
+                      {{ cash_book_sumary.positive_current_balance|subtract_float:cash_book_sumary.negative_current_balance|money }}
                     </td>
                   </tr>
                 {% endfor %}
