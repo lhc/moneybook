@@ -1,8 +1,20 @@
 import datetime
 import decimal
+from dataclasses import dataclass
 
 from django.db import models
 from django.db.models import F, Q, Sum, Value, Window
+
+
+@dataclass
+class TransactionSummary:
+    incomes_month: decimal.Decimal
+    expenses_month: decimal.Decimal
+    balance_month: decimal.Decimal
+    balance_year: decimal.Decimal
+    current_balance: decimal.Decimal
+    month: int
+    year: int
 
 
 class CashBookQuerySet(models.QuerySet):
@@ -74,97 +86,102 @@ class TransactionQuerySet(models.QuerySet):
         return initial_balance
 
     def summary(self, month, year):
-        all_transactions = self.all()
-        year_transactions = all_transactions.filter(date__year=year)
-        month_transactions = year_transactions.filter(date__month=month)
-
-        all_summary = all_transactions.aggregate(
-            incomes=Sum(
-                "amount",
-                default=decimal.Decimal("0"),
-                filter=Q(transaction_type=self.model.INCOME),
-            ),
-            expenses=Sum(
-                "amount",
-                default=decimal.Decimal("0"),
-                filter=Q(transaction_type=self.model.EXPENSE),
-            ),
-            deposits=Sum(
-                "amount",
-                default=decimal.Decimal("0"),
-                filter=Q(transaction_type=self.model.DEPOSIT),
-            ),
-            withdraws=Sum(
-                "amount",
-                default=decimal.Decimal("0"),
-                filter=Q(transaction_type=self.model.WITHDRAW),
-            ),
+        incomes_month = self.filter(
+            date__month=month, date__year=year, transaction_type=self.model.INCOME
+        ).aggregate(incomes_month=Sum("amount"))["incomes_month"] or decimal.Decimal(
+            "0"
+        )
+        expenses_month = self.filter(
+            date__month=month, date__year=year, transaction_type=self.model.EXPENSE
+        ).aggregate(expenses_month=Sum("amount"))["expenses_month"] or decimal.Decimal(
+            "0"
         )
 
-        year_summary = year_transactions.aggregate(
-            incomes=Sum(
-                "amount",
-                default=decimal.Decimal("0"),
-                filter=Q(transaction_type=self.model.INCOME),
+        positive_balance_month = self.filter(
+            date__month=month,
+            date__year=year,
+            transaction_type__in=(
+                self.model.DEPOSIT,
+                self.model.INCOME,
             ),
-            expenses=Sum(
-                "amount",
-                default=decimal.Decimal("0"),
-                filter=Q(transaction_type=self.model.EXPENSE),
-            ),
-            deposits=Sum(
-                "amount",
-                default=decimal.Decimal("0"),
-                filter=Q(transaction_type=self.model.DEPOSIT),
-            ),
-            withdraws=Sum(
-                "amount",
-                default=decimal.Decimal("0"),
-                filter=Q(transaction_type=self.model.WITHDRAW),
-            ),
+        ).aggregate(positive_balance_month=Sum("amount"))[
+            "positive_balance_month"
+        ] or decimal.Decimal(
+            "0"
         )
 
-        month_summary = month_transactions.aggregate(
-            incomes=Sum(
-                "amount",
-                default=decimal.Decimal("0"),
-                filter=Q(transaction_type=self.model.INCOME),
+        negative_balance_month = self.filter(
+            date__month=month,
+            date__year=year,
+            transaction_type__in=(
+                self.model.WITHDRAW,
+                self.model.EXPENSE,
             ),
-            expenses=Sum(
-                "amount",
-                default=decimal.Decimal("0"),
-                filter=Q(transaction_type=self.model.EXPENSE),
-            ),
-            deposits=Sum(
-                "amount",
-                default=decimal.Decimal("0"),
-                filter=Q(transaction_type=self.model.DEPOSIT),
-            ),
-            withdraws=Sum(
-                "amount",
-                default=decimal.Decimal("0"),
-                filter=Q(transaction_type=self.model.WITHDRAW),
-            ),
+        ).aggregate(negative_balance_month=Sum("amount"))[
+            "negative_balance_month"
+        ] or decimal.Decimal(
+            "0"
         )
 
-        return {
-            "incomes_month": month_summary["incomes"],
-            "expenses_month": month_summary["expenses"],
-            "balance_month": month_summary["incomes"]
-            + month_summary["deposits"]
-            - month_summary["expenses"]
-            - month_summary["withdraws"],
-            "balance_year": year_summary["incomes"]
-            + year_summary["deposits"]
-            - year_summary["expenses"]
-            - year_summary["withdraws"],
-            "current_balance": all_summary["incomes"]
-            + all_summary["deposits"]
-            - all_summary["expenses"]
-            - all_summary["withdraws"],
-            "month": month,
-            "year": year,
-        }
+        positive_balance_year = self.filter(
+            date__year=year,
+            transaction_type__in=(
+                self.model.DEPOSIT,
+                self.model.INCOME,
+            ),
+        ).aggregate(positive_balance_year=Sum("amount"))[
+            "positive_balance_year"
+        ] or decimal.Decimal(
+            "0"
+        )
+
+        negative_balance_year = self.filter(
+            date__year=year,
+            transaction_type__in=(
+                self.model.WITHDRAW,
+                self.model.EXPENSE,
+            ),
+        ).aggregate(negative_balance_year=Sum("amount"))[
+            "negative_balance_year"
+        ] or decimal.Decimal(
+            "0"
+        )
+
+        positive_current_balance = self.filter(
+            transaction_type__in=(
+                self.model.DEPOSIT,
+                self.model.INCOME,
+            ),
+        ).aggregate(positive_current_balance=Sum("amount"))[
+            "positive_current_balance"
+        ] or decimal.Decimal(
+            "0"
+        )
+
+        negative_current_balance = self.filter(
+            transaction_type__in=(
+                self.model.WITHDRAW,
+                self.model.EXPENSE,
+            ),
+        ).aggregate(negative_current_balance=Sum("amount"))[
+            "negative_current_balance"
+        ] or decimal.Decimal(
+            "0"
+        )
+
+        balance_month = positive_balance_month - negative_balance_month
+        balance_year = positive_balance_year - negative_balance_year
+        current_balance = positive_current_balance - negative_current_balance
+
+        return TransactionSummary(
+            incomes_month=incomes_month,
+            expenses_month=expenses_month,
+            balance_month=balance_month,
+            balance_year=balance_year,
+            current_balance=current_balance,
+            month=month,
+            year=year,
+        )
 
     def with_cumulative_sum(self):
         return self.order_by("date").annotate(

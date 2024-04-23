@@ -130,30 +130,18 @@ def test_transactions_with_cumulative_sum(db):
     )
 
 
-def test_transactions_summary_with_transactions(db, cash_book_one_with_transactions):
-    # Income and Expense of Cash Book different than the fixture
-    extra_income = baker.make(  # noqa
-        Transaction,
-        date=datetime.date(2024, 4, 2),
-        amount=decimal.Decimal("15"),
-        transaction_type=Transaction.INCOME,
-    )
-    extra_expense = baker.make(  # noqa
-        Transaction,
-        date=datetime.date(2024, 4, 2),
-        amount=decimal.Decimal("17.1"),
-        transaction_type=Transaction.EXPENSE,
-    )
-
+def test_transactions_summary_with_transactions(
+    db, cash_book_one_with_transactions, cash_book_two_with_transactions
+):
     transactions_summary = Transaction.objects.summary(month=4, year=2024)
 
-    assert transactions_summary["incomes_month"] == decimal.Decimal("79.04")
-    assert transactions_summary["expenses_month"] == decimal.Decimal("96.75")
-    assert transactions_summary["balance_month"] == decimal.Decimal("72.29")
-    assert transactions_summary["balance_year"] == decimal.Decimal("192.29")
-    assert transactions_summary["current_balance"] == decimal.Decimal("192.29")
-    assert transactions_summary["month"] == 4
-    assert transactions_summary["year"] == 2024
+    assert transactions_summary.incomes_month == decimal.Decimal("64.04")
+    assert transactions_summary.expenses_month == decimal.Decimal("85.07")
+    assert transactions_summary.balance_month == decimal.Decimal("-81.03")
+    assert transactions_summary.balance_year == decimal.Decimal("159.87")
+    assert transactions_summary.current_balance == decimal.Decimal("259.87")
+    assert transactions_summary.month == 4
+    assert transactions_summary.year == 2024
 
 
 def test_cash_books_summary_with_transactions(

@@ -5,7 +5,7 @@ from pathlib import Path
 
 from django.core.management.base import BaseCommand
 
-from thebook.bookkeeping.models import Account, Category, Transaction
+from thebook.bookkeeping.models import CashBook, Category, Transaction
 from thebook.users.models import User
 
 
@@ -33,7 +33,7 @@ class Entry:
     @property
     def transaction_type(self):
         if "transferencia" in self.tags:
-            return Transaction.ACCOUNT_TRANSFER
+            return Transaction.DEPOSIT if self.value >= 0 else Transaction.WITHDRAW
         return Transaction.INCOME if self.value >= 0 else Transaction.EXPENSE
 
 
@@ -64,7 +64,7 @@ class Command(BaseCommand):
             self.stdout.write(self.style.WARNING(f"Processing entries of year {year}"))
 
         automation_user, _ = User.objects.get_or_create(email="contato@lhc.net.br")
-        accounts = {account.name: account for account in Account.objects.all()}
+        cash_books = {cash_book.name: cash_book for cash_book in CashBook.objects.all()}
         categories = {category.name: category for category in Category.objects.all()}
 
         existing_transactions = Transaction.objects.values_list("reference", flat=True)
@@ -89,16 +89,16 @@ class Command(BaseCommand):
                 continue
 
             if legacy_entry.category == "inicial":
-                # We don't need to have a transaction fo the year start
+                # We don't need to have a transaction for the year start
                 continue
 
             if year is not None and legacy_entry.date.year != year:
                 continue
 
-            entry_account = accounts.get(legacy_entry.account)
-            if entry_account is None:
-                entry_account = Account.objects.create(name=legacy_entry.account)
-                accounts[legacy_entry.account] = entry_account
+            entry_cash_book = cash_books.get(legacy_entry.account)
+            if entry_cash_book is None:
+                entry_cash_book = CashBook.objects.create(name=legacy_entry.account)
+                cash_books[legacy_entry.account] = entry_cash_book
 
             entry_category = categories.get(legacy_entry.category)
             if entry_category is None:
@@ -111,9 +111,9 @@ class Command(BaseCommand):
                     date=legacy_entry.entry_date,
                     description=legacy_entry.description,
                     transaction_type=legacy_entry.transaction_type,
-                    amount=legacy_entry.value,
-                    notes="",
-                    account=entry_account,
+                    amount=abs(legacy_entry.value),
+                    notes="Imported from legacy bookkeeping system",
+                    cash_book=entry_cash_book,
                     category=entry_category,
                     created_by=automation_user,
                 )
