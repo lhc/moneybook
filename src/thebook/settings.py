@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "debug_toolbar",
     "thebook.bookkeeping",
     "thebook.core",
+    "thebook.members",
     "thebook.users",
 ]
 
