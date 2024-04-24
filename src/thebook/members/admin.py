@@ -8,4 +8,10 @@ class MemberAdmin(admin.ModelAdmin): ...
 
 
 @admin.register(Membership)
-class MembershipAdmin(admin.ModelAdmin): ...
+class MembershipAdmin(admin.ModelAdmin):
+    list_display = (
+        "member",
+        "start",
+        "amount",
+        "interval",
+    )
