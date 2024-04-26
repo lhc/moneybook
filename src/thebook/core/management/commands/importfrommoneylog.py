@@ -95,6 +95,13 @@ class Command(BaseCommand):
             if year is not None and legacy_entry.date.year != year:
                 continue
 
+            # Fix invalid values from old database
+            if "," in legacy_entry.account:
+                for value in legacy_entry.account.split(","):
+                    if value.startswith("_"):
+                        legacy_entry.account = value
+                        break
+
             entry_cash_book = cash_books.get(legacy_entry.account)
             if entry_cash_book is None:
                 entry_cash_book = CashBook.objects.create(name=legacy_entry.account)
