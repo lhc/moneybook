@@ -125,6 +125,8 @@ class TransactionQuerySet(models.QuerySet):
         )
 
     def with_cumulative_sum(self):
-        return self.order_by("date").annotate(
-            cumulative_sum=Window(Sum("amount"), order_by=F("id").asc())
+        return (
+            self.order_by("date")
+            .order_by("id")
+            .annotate(cumulative_sum=Window(Sum("amount"), order_by=F("id").asc()))
         )

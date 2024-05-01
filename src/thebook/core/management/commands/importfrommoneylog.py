@@ -118,7 +118,7 @@ class Command(BaseCommand):
                     date=legacy_entry.entry_date,
                     description=legacy_entry.description,
                     transaction_type=legacy_entry.transaction_type,
-                    amount=abs(legacy_entry.value),
+                    amount=legacy_entry.value,
                     notes="Imported from legacy bookkeeping system",
                     cash_book=entry_cash_book,
                     category=entry_category,
