@@ -102,9 +102,21 @@ class Command(BaseCommand):
                         legacy_entry.account = value
                         break
 
+            cashbook_names = {
+                "_bradesco": "Bradesco",
+                "_cora": "Cora",
+                "_mercadopago": "Mercado Pago",
+                "_pagseguro": "PagSeguro",
+                "_paypal": "PayPal Renne",
+                "_paypal_lhc": "PayPal",
+                "_renne": "Conta Pessoal Renne",
+            }
             entry_cash_book = cash_books.get(legacy_entry.account)
             if entry_cash_book is None:
-                entry_cash_book = CashBook.objects.create(name=legacy_entry.account)
+                entry_cash_book = CashBook.objects.create(
+                    name=cashbook_names.get(legacy_entry.account)
+                    or legacy_entry.account
+                )
                 cash_books[legacy_entry.account] = entry_cash_book
 
             entry_category = categories.get(legacy_entry.category)
