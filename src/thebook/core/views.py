@@ -18,5 +18,6 @@ def dashboard(request):
         context={
             "transactions_summary": transactions_summary,
             "cash_books_summary": cash_books_summary,
+            "today": today,
         },
     )

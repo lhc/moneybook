@@ -75,6 +75,9 @@ class TransactionQuerySet(models.QuerySet):
     def for_cash_book(self, slug):
         return self.filter(cash_book__slug=slug)
 
+    def for_period(self, month, year):
+        return self.filter(date__month=month, date__year=year)
+
     def for_year(self, year):
         return self.filter(date__year=year)
 
