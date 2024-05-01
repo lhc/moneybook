@@ -43,13 +43,6 @@
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td colspan="5">
-                  </td>
-                  <td>
-                    {{ initial_balance|money }}
-                  </td>
-                </tr>
                 {% for transaction in transactions %}
                   <tr>
                     <td>
@@ -65,9 +58,9 @@
                       {{ transaction.description }}
                     </td>
                     <td>
-                      {{ transaction.category__name }}
+                      {{ transaction.category.name }}
                     </td>
-                    <td {% if transaction.balance < 0 %}class="text-danger"{% endif %}>
+                    <td {% if transaction.cumulative_sum < 0 %}class="text-danger"{% endif %}>
                       {{ transaction.cumulative_sum|money }}
                     </td>
                   </tr>
