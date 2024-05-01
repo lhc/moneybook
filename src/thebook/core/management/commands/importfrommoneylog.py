@@ -88,9 +88,13 @@ class Command(BaseCommand):
             if legacy_entry.reference in existing_transactions:
                 continue
 
-            if legacy_entry.category == "inicial":
-                # We don't need to have a transaction for the year start
+            if legacy_entry.date.year == 2017:
+                # 2017 entry is not valid
                 continue
+
+            if legacy_entry.category == "inicial" and legacy_entry.id_ != 747:
+                if legacy_entry.date.year != 2018:
+                    continue
 
             if year is not None and legacy_entry.date.year != year:
                 continue
