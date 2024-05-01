@@ -17,7 +17,7 @@ def cash_book_transactions(request, cash_book_slug):
     year = request.GET.get("year") or None
     month = request.GET.get("month") or None
 
-    transactions = cash_book.transaction_set.all()
+    transactions = cash_book.transaction_set.all().select_related("category")
     if month is not None and year is not None:
         transactions = transactions.for_period(month, year)
 
