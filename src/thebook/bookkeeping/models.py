@@ -68,7 +68,7 @@ class CashBook(models.Model):
             "expenses": expenses,
             "deposits": deposits,
             "withdraws": withdraws,
-            "balance": incomes + deposits - expenses - withdraws,
+            "balance": incomes + deposits + expenses + withdraws,
             "month": month,
             "year": year,
         }
@@ -135,3 +135,12 @@ class Transaction(models.Model):
 
     def __str__(self):
         return f"{self.description} ({self.amount:.2f})"
+
+    def save(self, *args, **kwargs):
+        if self.transaction_type in (
+            self.EXPENSE,
+            self.WITHDRAW,
+        ):
+            self.amount *= -1
+
+        super().save(*args, **kwargs)

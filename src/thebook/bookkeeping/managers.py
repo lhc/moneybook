@@ -78,9 +78,6 @@ class TransactionQuerySet(models.QuerySet):
     def for_period(self, month, year):
         return self.filter(date__month=month, date__year=year)
 
-    def for_year(self, year):
-        return self.filter(date__year=year)
-
     def initial_balance_for_year(self, year):
         reference_date = datetime.date(year, 1, 1)
         initial_balance = self.filter(date__lt=reference_date).aggregate(
@@ -100,81 +97,22 @@ class TransactionQuerySet(models.QuerySet):
             "0"
         )
 
-        positive_balance_month = self.filter(
+        balance_month = self.filter(
             date__month=month,
             date__year=year,
-            transaction_type__in=(
-                self.model.DEPOSIT,
-                self.model.INCOME,
-            ),
-        ).aggregate(positive_balance_month=Sum("amount"))[
-            "positive_balance_month"
-        ] or decimal.Decimal(
-            "0"
-        )
+        ).aggregate(
+            balance_month=Sum("amount")
+        )["balance_month"] or decimal.Decimal("0")
 
-        negative_balance_month = self.filter(
-            date__month=month,
+        balance_year = self.filter(
             date__year=year,
-            transaction_type__in=(
-                self.model.WITHDRAW,
-                self.model.EXPENSE,
-            ),
-        ).aggregate(negative_balance_month=Sum("amount"))[
-            "negative_balance_month"
-        ] or decimal.Decimal(
-            "0"
-        )
+        ).aggregate(
+            balance_year=Sum("amount")
+        )["balance_year"] or decimal.Decimal("0")
 
-        positive_balance_year = self.filter(
-            date__year=year,
-            transaction_type__in=(
-                self.model.DEPOSIT,
-                self.model.INCOME,
-            ),
-        ).aggregate(positive_balance_year=Sum("amount"))[
-            "positive_balance_year"
-        ] or decimal.Decimal(
-            "0"
-        )
-
-        negative_balance_year = self.filter(
-            date__year=year,
-            transaction_type__in=(
-                self.model.WITHDRAW,
-                self.model.EXPENSE,
-            ),
-        ).aggregate(negative_balance_year=Sum("amount"))[
-            "negative_balance_year"
-        ] or decimal.Decimal(
-            "0"
-        )
-
-        positive_current_balance = self.filter(
-            transaction_type__in=(
-                self.model.DEPOSIT,
-                self.model.INCOME,
-            ),
-        ).aggregate(positive_current_balance=Sum("amount"))[
-            "positive_current_balance"
-        ] or decimal.Decimal(
-            "0"
-        )
-
-        negative_current_balance = self.filter(
-            transaction_type__in=(
-                self.model.WITHDRAW,
-                self.model.EXPENSE,
-            ),
-        ).aggregate(negative_current_balance=Sum("amount"))[
-            "negative_current_balance"
-        ] or decimal.Decimal(
-            "0"
-        )
-
-        balance_month = positive_balance_month - negative_balance_month
-        balance_year = positive_balance_year - negative_balance_year
-        current_balance = positive_current_balance - negative_current_balance
+        current_balance = self.filter().aggregate(current_balance=Sum("amount"))[
+            "current_balance"
+        ] or decimal.Decimal("0")
 
         return TransactionSummary(
             incomes_month=incomes_month,

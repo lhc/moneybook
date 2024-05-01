@@ -29,20 +29,6 @@ def test_transactions():
     )
 
 
-@pytest.mark.django_db
-def test_get_transactions_by_specific_year():
-    transaction_2021 = baker.make(Transaction, date=datetime.date(2021, 4, 28))
-    transaction_2022 = baker.make(Transaction, date=datetime.date(2022, 3, 2))
-    transaction_2023 = baker.make(Transaction, date=datetime.date(2023, 12, 8))
-
-    transactions = Transaction.objects.for_year(2022)
-
-    assert len(transactions) == 1
-    assert transaction_2021 not in transactions
-    assert transaction_2022 in transactions
-    assert transaction_2023 not in transactions
-
-
 @pytest.mark.parametrize(
     "year,expected_initial_balance",
     [
@@ -75,32 +61,6 @@ def test_get_transaction_for_cash_book(db):
     assert transaction_1 not in transactions
     assert transaction_2 in transactions
     assert transaction_3 not in transactions
-
-
-def test_get_transaction_for_cash_book_in_specific_year(db):
-    cash_book_1 = baker.make(CashBook)
-    cash_book_2 = baker.make(CashBook)  # noqa
-
-    transaction_1 = baker.make(
-        Transaction, date=datetime.date(2021, 4, 28), cash_book=cash_book_1
-    )
-    transaction_2 = baker.make(
-        Transaction, date=datetime.date(2022, 3, 2), cash_book=cash_book_1
-    )
-    transaction_3 = baker.make(
-        Transaction, date=datetime.date(2022, 3, 2), cash_book=cash_book_2
-    )
-    transaction_4 = baker.make(
-        Transaction, date=datetime.date(2023, 12, 8), cash_book=cash_book_1
-    )
-
-    transactions = Transaction.objects.for_cash_book(cash_book_2.slug).for_year(2022)
-
-    assert len(transactions) == 1
-    assert transaction_1 not in transactions
-    assert transaction_2 not in transactions
-    assert transaction_3 in transactions
-    assert transaction_4 not in transactions
 
 
 def test_transactions_with_cumulative_sum(db):
@@ -136,7 +96,7 @@ def test_transactions_summary_with_transactions(
     transactions_summary = Transaction.objects.summary(month=4, year=2024)
 
     assert transactions_summary.incomes_month == decimal.Decimal("64.04")
-    assert transactions_summary.expenses_month == decimal.Decimal("85.07")
+    assert transactions_summary.expenses_month == decimal.Decimal("-85.07")
     assert transactions_summary.balance_month == decimal.Decimal("-81.03")
     assert transactions_summary.balance_year == decimal.Decimal("159.87")
     assert transactions_summary.current_balance == decimal.Decimal("259.87")
@@ -158,17 +118,17 @@ def test_cash_books_summary_with_transactions(
     assert first_summary.name == cash_book_one_with_transactions.name
     assert first_summary.slug == cash_book_one_with_transactions.slug
     assert first_summary.positive_balance_month == decimal.Decimal("234.04")
-    assert first_summary.negative_balance_month == decimal.Decimal("159.65")
+    assert first_summary.negative_balance_month == decimal.Decimal("-159.65")
     assert first_summary.positive_current_balance == decimal.Decimal("551.36")
-    assert first_summary.negative_current_balance == decimal.Decimal("356.97")
+    assert first_summary.negative_current_balance == decimal.Decimal("-356.97")
     assert first_summary.month == 4
     assert first_summary.year == 2024
 
     assert second_summary.name == cash_book_two_with_transactions.name
     assert second_summary.slug == cash_book_two_with_transactions.slug
     assert second_summary.positive_balance_month == decimal.Decimal("0")
-    assert second_summary.negative_balance_month == decimal.Decimal("155.42")
+    assert second_summary.negative_balance_month == decimal.Decimal("-155.42")
     assert second_summary.positive_current_balance == decimal.Decimal("220.9")
-    assert second_summary.negative_current_balance == decimal.Decimal("155.42")
+    assert second_summary.negative_current_balance == decimal.Decimal("-155.42")
     assert second_summary.month == 4
     assert second_summary.year == 2024
