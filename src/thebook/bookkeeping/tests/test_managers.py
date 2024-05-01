@@ -1,50 +1,9 @@
 import datetime
 import decimal
 
-import pytest
 from model_bakery import baker
 
 from thebook.bookkeeping.models import CashBook, Transaction
-
-
-@pytest.fixture
-def test_transactions():
-    baker.make(
-        Transaction, date=datetime.date(2021, 1, 1), amount=decimal.Decimal("10.1")
-    )
-    baker.make(
-        Transaction, date=datetime.date(2021, 2, 2), amount=decimal.Decimal("20.1")
-    )
-    baker.make(
-        Transaction, date=datetime.date(2022, 3, 3), amount=decimal.Decimal("300.1")
-    )
-    baker.make(
-        Transaction, date=datetime.date(2022, 4, 4), amount=decimal.Decimal("400.1")
-    )
-    baker.make(
-        Transaction, date=datetime.date(2023, 5, 5), amount=decimal.Decimal("5000.1")
-    )
-    baker.make(
-        Transaction, date=datetime.date(2023, 6, 6), amount=decimal.Decimal("6000.1")
-    )
-
-
-@pytest.mark.parametrize(
-    "year,expected_initial_balance",
-    [
-        (2020, decimal.Decimal("0")),
-        (2021, decimal.Decimal("0")),
-        (2022, decimal.Decimal("30.2")),
-        (2023, decimal.Decimal("730.4")),
-        (2024, decimal.Decimal("11730.6")),
-    ],
-)
-def test_get_initial_balance_for_year(
-    db, test_transactions, year, expected_initial_balance
-):
-    initial_balance = Transaction.objects.initial_balance_for_year(year)
-
-    assert initial_balance == expected_initial_balance
 
 
 def test_get_transaction_for_cash_book(db):

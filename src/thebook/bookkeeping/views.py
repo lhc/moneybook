@@ -17,9 +17,9 @@ def cash_book_transactions(request, cash_book_slug):
     year = request.GET.get("year") or None
     month = request.GET.get("month") or None
 
-    transactions = cash_book.transaction_set.for_period(
-        month, year
-    ).with_cumulative_sum()
+    transactions = cash_book.transaction_set.all()
+    if month is not None and year is not None:
+        transactions = transactions.for_period(month, year)
 
     initial_balance = 0
 
@@ -29,6 +29,6 @@ def cash_book_transactions(request, cash_book_slug):
         context={
             "cash_book": cash_book,
             "initial_balance": initial_balance,
-            "transactions": transactions,
+            "transactions": transactions.with_cumulative_sum(),
         },
     )

@@ -21,30 +21,8 @@ def test_cash_book_all_transactions_access(db, client, cash_book):
     assert response.status_code == 200
 
 
-def test_cash_book_transactions_for_year_access(db, client, cash_book):
-    response = client.get(
-        reverse(
-            "bookkeeping:cash-book-transactions-for-year",
-            args=(
-                cash_book.slug,
-                2024,
-            ),
-        )
-    )
-
-    assert response.status_code == 200
-
-
 def test_all_transactions_access(db, client, cash_book):
     response = client.get(reverse("bookkeeping:all-transactions"))
-
-    assert response.status_code == 200
-
-
-def test_all_transactions_for_year_access(db, client, cash_book):
-    response = client.get(
-        reverse("bookkeeping:all-transactions-for-year", args=(2024,))
-    )
 
     assert response.status_code == 200
 
