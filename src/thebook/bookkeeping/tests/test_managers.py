@@ -76,18 +76,14 @@ def test_cash_books_summary_with_transactions(
 
     assert first_summary.name == cash_book_one_with_transactions.name
     assert first_summary.slug == cash_book_one_with_transactions.slug
-    assert first_summary.positive_balance_month == decimal.Decimal("234.04")
-    assert first_summary.negative_balance_month == decimal.Decimal("-159.65")
-    assert first_summary.positive_current_balance == decimal.Decimal("551.36")
-    assert first_summary.negative_current_balance == decimal.Decimal("-356.97")
+    assert first_summary.balance_month == decimal.Decimal("74.39")
+    assert first_summary.current_balance == decimal.Decimal("194.39")
     assert first_summary.month == 4
     assert first_summary.year == 2024
 
     assert second_summary.name == cash_book_two_with_transactions.name
     assert second_summary.slug == cash_book_two_with_transactions.slug
-    assert second_summary.positive_balance_month == decimal.Decimal("0")
-    assert second_summary.negative_balance_month == decimal.Decimal("-155.42")
-    assert second_summary.positive_current_balance == decimal.Decimal("220.9")
-    assert second_summary.negative_current_balance == decimal.Decimal("-155.42")
+    assert second_summary.balance_month == decimal.Decimal("-155.42")
+    assert second_summary.current_balance == decimal.Decimal("65.48")
     assert second_summary.month == 4
     assert second_summary.year == 2024

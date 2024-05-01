@@ -19,51 +19,17 @@ class TransactionSummary:
 
 class CashBookQuerySet(models.QuerySet):
     def summary(self, month, year):
-        from thebook.bookkeeping.models import Transaction
-
         return self.annotate(
-            positive_balance_month=Sum(
+            balance_month=Sum(
                 "transaction__amount",
                 filter=Q(
                     transaction__date__month=month,
                     transaction__date__year=year,
-                    transaction__transaction_type__in=(
-                        Transaction.DEPOSIT,
-                        Transaction.INCOME,
-                    ),
                 ),
                 default=decimal.Decimal("0"),
             ),
-            negative_balance_month=Sum(
+            current_balance=Sum(
                 "transaction__amount",
-                filter=Q(
-                    transaction__date__month=month,
-                    transaction__date__year=year,
-                    transaction__transaction_type__in=(
-                        Transaction.WITHDRAW,
-                        Transaction.EXPENSE,
-                    ),
-                ),
-                default=decimal.Decimal("0"),
-            ),
-            positive_current_balance=Sum(
-                "transaction__amount",
-                filter=Q(
-                    transaction__transaction_type__in=(
-                        Transaction.DEPOSIT,
-                        Transaction.INCOME,
-                    )
-                ),
-                default=decimal.Decimal("0"),
-            ),
-            negative_current_balance=Sum(
-                "transaction__amount",
-                filter=Q(
-                    transaction__transaction_type__in=(
-                        Transaction.WITHDRAW,
-                        Transaction.EXPENSE,
-                    )
-                ),
                 default=decimal.Decimal("0"),
             ),
             month=Value(month),

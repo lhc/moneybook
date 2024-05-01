@@ -119,11 +119,11 @@
                     <td>
                       <a href="{% url 'bookkeeping:cash-book-transactions' cash_book_sumary.slug %}?year={{ today.year }}&month={{ today.month }}">{{ cash_book_sumary.name }}</a>
                     </td>
-                    <td>
-                      {{ cash_book_sumary.positive_balance_month|subtract_float:cash_book_sumary.negative_balance_month|money }}
+                    <td {% if cash_book_sumary.balance_month < 0 %}class="text-danger"{% endif %}>
+                      {{ cash_book_sumary.balance_month|money }}
                     </td>
-                    <td>
-                      {{ cash_book_sumary.positive_current_balance|subtract_float:cash_book_sumary.negative_current_balance|money }}
+                    <td {% if cash_book_sumary.current_balance < 0 %}class="text-danger"{% endif %}>
+                      {{ cash_book_sumary.current_balance|money }}
                     </td>
                   </tr>
                 {% endfor %}
