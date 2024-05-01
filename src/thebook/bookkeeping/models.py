@@ -13,6 +13,7 @@ from thebook.bookkeeping.managers import CashBookQuerySet, TransactionQuerySet
 class CashBook(models.Model):
     name = models.CharField(max_length=64, unique=True)
     slug = models.SlugField(max_length=64, unique=True)
+    description = models.TextField(blank=True)
 
     objects = CashBookQuerySet.as_manager()
 
