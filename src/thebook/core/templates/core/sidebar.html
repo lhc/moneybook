@@ -33,6 +33,9 @@
     <a class="nav-link" href="">
       <i class="fas fa-fw fa-chart-area"></i>
       <span>{% translate "Cash Books" %}</span></a>
+    <a class="nav-link" href="{% url 'bookkeeping:import-transactions' %}">
+      <i class="fas fa-fw fa-chart-area"></i>
+      <span>{% translate "Import Transactions" %}</span></a>
   </li>
   <div class="sidebar-heading">
     {% translate "Membership" %}

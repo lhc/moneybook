@@ -6,6 +6,9 @@ app_name = "bookkeeping"
 
 urlpatterns = [
     path("all/transactions", views.all_transactions, name="all-transactions"),
+    path(
+        "cb/import/transactions", views.import_transactions, name="import-transactions"
+    ),
     path("cb/", views.cash_books, name="cash-books"),
     path(
         "cb/<slug:cash_book_slug>/transactions",

@@ -32,3 +32,11 @@ def cash_book_transactions(request, cash_book_slug):
             "transactions": transactions.with_cumulative_sum(),
         },
     )
+
+
+def import_transactions(request):
+    cash_books = CashBook.objects.all().order_by("name")
+
+    return render(
+        request, "bookkeeping/import.html", context={"cash_books": cash_books}
+    )
