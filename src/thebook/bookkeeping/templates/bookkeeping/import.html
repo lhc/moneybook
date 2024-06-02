@@ -1,0 +1,65 @@
+{% extends "core/base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+  <!-- Begin Page Content -->
+  <div class="container-fluid">
+
+    <div class="row">
+      <div class="col-xl-4 col-md-4 mb-4">
+
+        <div class="card shadow mb-4">
+          <div class="card-header">
+            <h4 class="m-0 font-weight-bold text-primary">
+              {% translate "Import Transactions" %}
+            </h4>
+          </div>
+          <div class="card-body">
+            <form>
+              <div class="form-group">
+                <label for="input_file">
+                  {% translate "File to import..." %}
+                </label>
+                <input type="file" class="form-control-file" id="input_file" />
+              </div>
+              <div class="form-group">
+                <label for="cash_book">
+                  {% translate "Import to Cash Book" %}
+                </label>
+                <select class="form-control" id="cash_book">
+                  {% for cash_book in cash_books %}
+                    <option value="{{ cash_book.id }}">
+                      {{ cash_book.name }}
+                    </option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="file_source">
+                  {% translate "File Source" %}
+                </label>
+                <select class="form-control" id="file_source">
+                  <option value="bradesco">
+                    Bradesco
+                  </option>
+                  <option value="cora">
+                    Cora
+                  </option>
+                  <option value="paypal">
+                    Paypal
+                  </option>
+                </select>
+              </div>
+              <button class="btn btn-primary btn-user btn-block">
+                {% translate "Process file" %}
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <!-- /.container-fluid -->
+{% endblock content %}
