@@ -12,6 +12,11 @@ class Member(models.Model):
     name = models.CharField(max_length=100, verbose_name=_("Name"))
     email = models.EmailField(max_length=200, verbose_name=_("E-Mail"))
 
+    has_key = models.BooleanField(default=False, verbose_name=_("Has physical key?"))
+    phone_number = models.CharField(
+        max_length=16, blank=True, verbose_name=_("Phone number")
+    )
+
     def __str__(self):
         return self.name
 
