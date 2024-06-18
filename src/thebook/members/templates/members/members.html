@@ -29,19 +29,25 @@
                   <th>
                     {% translate "Start Membership" %}
                   </th>
+                  <th>
+                    {% translate "Has physical key?" %}
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {% for member in members %}
                   <tr>
                     <td>
-                      {{ member.number }}
+                      {{ member.id|stringformat:"03d" }}
                     </td>
                     <td>
                       {{ member.name }}
                     </td>
                     <td>
                       {{ member.current_membership.start }}
+                    </td>
+                    <td>
+                      {{ member.has_key }}
                     </td>
                   </tr>
                 {% endfor %}

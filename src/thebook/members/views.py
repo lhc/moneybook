@@ -4,6 +4,6 @@ from thebook.members.models import Member
 
 
 def members(request):
-    members = Member.objects.all()
+    members = Member.objects.order_by("name")
 
     return render(request, "members/members.html", context={"members": members})

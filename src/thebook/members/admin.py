@@ -4,7 +4,12 @@ from thebook.members.models import Member, Membership
 
 
 @admin.register(Member)
-class MemberAdmin(admin.ModelAdmin): ...
+class MemberAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "name",
+        "has_key",
+    )
 
 
 @admin.register(Membership)

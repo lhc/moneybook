@@ -4,11 +4,6 @@ from django.utils.translation import gettext as _
 
 
 class Member(models.Model):
-    number = models.CharField(
-        max_length=100,
-        verbose_name=_("Membership Number"),
-        db_index=True,
-    )
     name = models.CharField(max_length=100, verbose_name=_("Name"))
     email = models.EmailField(max_length=200, verbose_name=_("E-Mail"))
 
