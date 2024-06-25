@@ -1,0 +1,33 @@
+{% extends "core/base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+  <!-- Begin Page Content -->
+  <div class="container-fluid">
+
+    <div class="row">
+      <div class="col-xl-12 col-md-12 mb-12">
+
+        <div class="card shadow mb-12">
+          <div class="card-header">
+            <h4 class="m-0 font-weight-bold text-primary">
+              {% translate "New Member" %}
+            </h4>
+          </div>
+          <div class="card-body">
+
+            <form action='{% url "members:new-member" %}' method="post">
+              {% csrf_token %}
+              {{ form.as_p }}
+              <input type="submit" value='{% translate "Add Member" %}' />
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <!-- /.container-fluid -->
+{% endblock content %}

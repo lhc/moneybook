@@ -39,8 +39,8 @@ class Membership(models.Model):
     member = models.ForeignKey(
         to="members.Member", on_delete=models.CASCADE, related_name="memberships"
     )
-    start = models.DateField(verbose_name=_("start"))
-    end = models.DateField(verbose_name=_("end"), null=True, blank=True)
+    start = models.DateField(verbose_name=_("Start Membership"))
+    end = models.DateField(verbose_name=_("End Membership"), null=True, blank=True)
     amount = models.DecimalField(
         max_digits=8,
         decimal_places=2,
