@@ -1,9 +1,56 @@
-from django.http import HttpResponseRedirect
+import csv
+
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
 from thebook.members.forms import NewMemberForm
 from thebook.members.models import Member, Membership
+
+
+def export_members_list(request):
+    response = HttpResponse(
+        content_type="text/csv",
+        headers={"Content-Disposition": 'attachment; filename="members-list.csv"'},
+    )
+
+    writer = csv.writer(response)
+
+    writer.writerow(
+        [
+            "id",
+            "name",
+            "email",
+            "has_key",
+            "phone_number",
+            "start_membership",
+            "fee_amount",
+            "fee_interval",
+        ]
+    )
+    for member in Member.objects.all():
+        membership = member.current_membership()
+
+        start_membership = membership.start if membership is not None else ""
+        fee_amount = membership.amount if membership is not None else ""
+        fee_interval = (
+            membership.get_interval_display() if membership is not None else ""
+        )
+
+        writer.writerow(
+            [
+                member.id,
+                member.name,
+                member.email,
+                member.has_key,
+                member.phone_number,
+                start_membership,
+                fee_amount,
+                fee_interval,
+            ]
+        )
+
+    return response
 
 
 def members(request):
