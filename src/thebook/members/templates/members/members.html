@@ -12,7 +12,7 @@
         <div class="card shadow mb-12">
           <div class="card-header">
             <h4 class="m-0 font-weight-bold text-primary">
-              {% translate "Members" %}
+              {% translate "Members" %} ({{ members.count }})
             </h4>
             <a href="{% url 'members:new-member' %}"
                class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
